@@ -1,0 +1,67 @@
+/dts-v1/;
+
+/ {
+    description = "U-Boot fitImage for zynq kernel";
+    magic = "ITB Zynq";
+    #address-cells = <1>;
+
+    images {
+        linux_kernel@0 {
+            description = "Linux Kernel";
+            data = /incbin/("../build/zImage");
+            type = "kernel";
+            arch = "arm";
+            os = "linux";
+            compression = "none";
+            load = <0x8000>;
+            entry = <0x8000>;
+            hash@1 {
+                algo = "md5";
+            };
+        };
+        fdt@0 {
+            description = "Flattened Device Tree blob";
+            data = /incbin/("../build/zynq.dtb");
+            type = "flat_dt";
+            arch = "arm";
+            compression = "none";
+        };
+        ramdisk@0 {
+            description = "ramdisk";
+            data = /incbin/("../build/rootfs.cpio.gz");
+            type = "ramdisk";
+            arch = "arm";
+            os = "linux";
+            compression = "gzip";
+            hash@1 {
+                algo = "md5";
+            };
+        };
+        fpga@1 {
+            description = "FPGA";
+            data = /incbin/("../build/system_top.bit");
+            type = "fpga";
+            arch = "arm";
+            compression = "none";
+            load = <0xF000000>;
+            hash@1 {
+              algo = "md5";
+            };
+        };
+    };
+    configurations {
+        default = "conf@1";
+        conf@1 {
+            description = "Boot Linux kernel with FDT blob, ramdisk and program FPGA";
+            kernel = "linux_kernel@0";
+            fdt = "fdt@0";
+            ramdisk = "ramdisk@0";
+            fpga = "fpga@1";
+        };
+        conf@2 {
+            description = "Boot Linux kernel with FDT blob";
+            kernel = "linux_kernel@0";
+            fdt = "fdt@0";
+        };
+    };
+};

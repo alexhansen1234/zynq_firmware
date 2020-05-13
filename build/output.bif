@@ -1,0 +1,6 @@
+//arch = zynq; split = false; format = BIN
+the_ROM_image:
+{
+	[bootloader]/home/alex/vitis_workspace/fft_linux/zynq_fsbl/executable.elf
+	/home/alex/vitis_workspace/fft_linux/bitstream/design_1_wrapper.bit
+}
